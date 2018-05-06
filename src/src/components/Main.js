@@ -96,14 +96,14 @@ var AppComponent = React.createClass({
 			topImgNum = Math.ceil(Math.random() * 2),
 			topImgSpliceIndex = 0,
 
-			imgsArrangeCenterArr = imgsArrangeArr.slice(centerIndex, 1);
+			imgsArrangeCenterArr = imgsArrangeArr.splice(centerIndex, 1);
 
 		//剧中centerIndex 的图片
 		imgsArrangeCenterArr[0].pos = centerPos;
 
 		//取出要布局上侧的图片的状态信息
 		topImgSpliceIndex = Math.ceil(Math.random() * (imgsArrangeArr.length - topImgNum));
-		imgsArrangeTopArr = imgsArrangeArr.slice(topImgSpliceIndex, topImgNum);
+		imgsArrangeTopArr = imgsArrangeArr.splice(topImgSpliceIndex, topImgNum);
 		console.log("topImgSpliceIndex:"+ topImgSpliceIndex);
 
 		//布局上侧图片
@@ -133,10 +133,10 @@ var AppComponent = React.createClass({
 		}
 
 		if(imgsArrangeTopArr && imgsArrangeTopArr[0]) {
-			imgsArrangeArr.slice(topImgSpliceIndex, 0, imgsArrangeTopArr[0]);
+			imgsArrangeArr.splice(topImgSpliceIndex, 0, imgsArrangeTopArr[0]);
 		}
 
-		imgsArrangeArr.slice(centerIndex, 0, imgsArrangeCenterArr[0]);
+		imgsArrangeArr.splice(centerIndex, 0, imgsArrangeCenterArr[0]);
 		this.setState({
 			imgsArrangeArr: imgsArrangeArr
 		});
@@ -167,6 +167,8 @@ var AppComponent = React.createClass({
 		this.Constant.hPosRange.leftSecX[0] = -halfImgW;
 		this.Constant.hPosRange.leftSecX[1] = halfStageW - halfImgW * 3;
 		this.Constant.hPosRange.rightSecX[0] = halfStageW + halfImgW;
+		this.Constant.hPosRange.rightSecX[1] = stageW - halfImgW;
+		
 		this.Constant.hPosRange.y[0] = -halfImgH;
 		this.Constant.hPosRange.y[1] = halfStageH - halfImgH;
 
