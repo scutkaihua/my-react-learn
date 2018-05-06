@@ -23,8 +23,20 @@ var ImgFigure = React.createClass({
 	render: function() {
 
 		var styleObj = {};
+		//位置
 		if(this.props.arrange.pos) {
 			styleObj = this.props.arrange.pos;
+		}
+		//角度
+		if(this.props.arrange.rotate) {
+			
+			([
+				'-moz-','-ms-','-wekit-',''
+			]).forEach(function(value,index){
+				styleObj[value + 'transform'] = 'rotate('  + this.props.arrange.rotate + 'deg)';
+			}.bind(this));
+			
+			
 		}
 
 		return(
@@ -45,6 +57,11 @@ function getRangeRandom(low, high) {
 	return Math.ceil(Math.random() * (high - low) + low);
 }
 
+/*+-30随机数*/
+function get30DegRandom() {
+	return(Math.random() > 0.5 ? "" : "-") + Math.ceil(Math.random() * 30)
+}
+
 var AppComponent = React.createClass({
 
 	getInitialState: function() {
@@ -55,7 +72,8 @@ var AppComponent = React.createClass({
 				//					pos:{
 				//						left:'0',
 				//						top:'0'
-				//					}
+				//					},
+				//rotate:0,
 				//				}
 			]
 		};
@@ -100,18 +118,20 @@ var AppComponent = React.createClass({
 
 		//剧中centerIndex 的图片
 		imgsArrangeCenterArr[0].pos = centerPos;
+		imgsArrangeCenterArr[0].rotate = 0;
 
 		//取出要布局上侧的图片的状态信息
 		topImgSpliceIndex = Math.ceil(Math.random() * (imgsArrangeArr.length - topImgNum));
 		imgsArrangeTopArr = imgsArrangeArr.splice(topImgSpliceIndex, topImgNum);
-		console.log("topImgSpliceIndex:"+ topImgSpliceIndex);
+		console.log("topImgSpliceIndex:" + topImgSpliceIndex);
 
 		//布局上侧图片
 		imgsArrangeTopArr.forEach(function(value, index) {
 			imgsArrangeTopArr[index].pos = {
 				top: getRangeRandom(vPosRangeTopY[0], vPosRangeTopY[1]),
 				left: getRangeRandom(vPosRangeX[0], vPosRangeX[1])
-			}
+			};
+			imgsArrangeTopArr[index].rotate = get30DegRandom();
 
 		});
 
@@ -130,6 +150,7 @@ var AppComponent = React.createClass({
 				top: getRangeRandom(hPosRangeY[0], hPosRangeY[1]),
 				left: getRangeRandom(hPosRangeLORX[0], hPosRangeLORX[1])
 			}
+			imgsArrangeArr[i].rotate = get30DegRandom();
 		}
 
 		if(imgsArrangeTopArr && imgsArrangeTopArr[0]) {
@@ -140,13 +161,13 @@ var AppComponent = React.createClass({
 		this.setState({
 			imgsArrangeArr: imgsArrangeArr
 		});
-		
+
 		console.log(JSON.stringify(imgsArrangeArr));
 
 	},
 
 	componentDidMount: function() {
-		console.log( ReactDOM.findDOMNode);
+		console.log(ReactDOM.findDOMNode);
 		var stageDom = ReactDOM.findDOMNode(this.refs.stage),
 			stageW = stageDom.scrollWidth,
 			stageH = stageDom.scrollHeight,
@@ -168,7 +189,7 @@ var AppComponent = React.createClass({
 		this.Constant.hPosRange.leftSecX[1] = halfStageW - halfImgW * 3;
 		this.Constant.hPosRange.rightSecX[0] = halfStageW + halfImgW;
 		this.Constant.hPosRange.rightSecX[1] = stageW - halfImgW;
-		
+
 		this.Constant.hPosRange.y[0] = -halfImgH;
 		this.Constant.hPosRange.y[1] = halfStageH - halfImgH;
 
@@ -176,7 +197,7 @@ var AppComponent = React.createClass({
 		this.Constant.vPosRange.topY[1] = halfStageH - halfImgH * 3;
 		this.Constant.vPosRange.x[0] = halfStageW - imgW;
 		this.Constant.vPosRange.x[1] = halfStageW;
-		
+
 		console.log(JSON.stringify(this.Constant));
 
 		this.rearrange(0);
@@ -193,14 +214,14 @@ var AppComponent = React.createClass({
 					pos: {
 						left: '0',
 						top: '0'
-					}
+					},
+					rotate: 0,
 				}
 			}
 
 			imgFigures.push(<ImgFigure key={index} data={value} ref = {'imgFigure'+index} 
 			 arrange = {this.state.imgsArrangeArr[index]}/>);
 		}.bind(this));
-
 
 		return(
 			<section className="stage" ref="stage">
